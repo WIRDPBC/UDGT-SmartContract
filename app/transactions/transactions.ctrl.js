@@ -31,14 +31,19 @@ transactionsCtrl.buildTransaction = async (req, res) => {
             })
             .then(function (sourceAccount) {
                 // Start building the transaction.
-                console.log(sourceAccount)
-                transaction = new StellarSdk.TransactionBuilder(sourceAccount)
+                console.log("SOURCE ACCOUNT:",sourceAccount)
+                transaction = new StellarSdk.TransactionBuilder(sourceAccount,
+                   {
+                    memo: transactionReq.memoText,
+                    fee: StellarSdk.BASE_FEE
+                   } )
                     .addOperation(StellarSdk.Operation.payment({
                         destination: destinationId,
                         asset: StellarSdk.Asset.native(),
-                        amount: transactionReq.amount
+                        amount: transactionReq.amount,
+                        fee: transactionReq.fee
                     }))
-                    .addMemo(StellarSdk.Memo.text(transactionReq.memoText))
+                    //.addMemo(StellarSdk.Memo.text(transactionReq.memoText))
                     .setTimeout(1000)
                     .build();
                 transaction.sign(sourceKeys);
@@ -54,7 +59,7 @@ transactionsCtrl.buildTransaction = async (req, res) => {
                 res.json({
                     status: 400,
                     message: "Error occured",
-                    error: err.message
+                    error: error.message
                 })
             });
     }
@@ -97,13 +102,17 @@ transactionsCtrl.gameTransaction = async (req, res) => {
                     })
                 }
                 else{
-                transaction = new StellarSdk.TransactionBuilder(sourceAccount)
+                transaction = new StellarSdk.TransactionBuilder(sourceAccount,
+                    {
+                        memo: request.memoText,
+                        fee: StellarSdk.BASE_FEE
+                       })
                     .addOperation(StellarSdk.Operation.payment({
                         destination: destinationId,
                         asset: StellarSdk.Asset.native(),
                         amount: request.amount
                     }))
-                    .addMemo(StellarSdk.Memo.text(request.memoText))
+                    //.addMemo(StellarSdk.Memo.text(request.memoText))
                     .setTimeout(1000)
                     .build();
                 transaction.sign(sourceKeys);
@@ -120,7 +129,7 @@ transactionsCtrl.gameTransaction = async (req, res) => {
                 res.json({
                     status: 400,
                     message: "Error occured",
-                    error: err.message
+                    error: error.message
                 })
             });
     }
