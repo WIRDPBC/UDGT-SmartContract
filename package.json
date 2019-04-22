@@ -1,9 +1,6 @@
 {
   "name": "stellar",
   "version": "1.0.0",
-  "engines": {
-    "node": ">=6.0"
-  },
   "description": "",
   "main": "server.js",
   "scripts": {
